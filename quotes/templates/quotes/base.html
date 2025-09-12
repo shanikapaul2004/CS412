@@ -1,0 +1,34 @@
+
+{% load static %}
+
+<html>
+    <head>
+        <title>Maya Angelou Quotes</title>
+        <link rel="stylesheet" href="{% static 'styles.css' %}">
+    </head>
+    <body>
+        <header style="width: 100%; display: flex; justify-content: space-between; align-items: center; background: aliceblue; position: fixed; top: 0; left: 0; z-index: 999; padding: 10px 20px; box-sizing: border-box;">
+            <div>
+                <h1 style="margin: 0; font-size: 1.5em;">Walt Disney Quotes</h1>
+            </div>
+            <nav style="display: flex; align-items: center;">
+                <a href="{% url 'quote' %}" style="margin: 0 15px; color: slategray; text-decoration: none; font-weight: bold;">Quote</a>
+                <a href="{% url 'show_all' %}" style="margin: 0 15px; color: slategray; text-decoration: none; font-weight: bold;">Show All</a>
+                <a href="{% url 'about' %}" style="margin: 0 15px; color: slategray; text-decoration: none; font-weight: bold;">About</a>
+            </nav>
+        </header>
+
+        <main style="margin-top: 80px; margin-bottom: 80px;">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <footer>
+            <div style="text-align: center; padding: 10px;">
+                The current time is {{ time }}. <br>
+                This page has been brought to you by the letters {{ letter1 }} and {{ letter2 }}
+                and by the number {{ number }}.
+            </div>
+        </footer>
+    </body>
+</html>

@@ -1,0 +1,26 @@
+{% extends 'quotes/base.html' %}
+
+{% block content %}
+<div style="margin-top: 60px;">
+    
+    <h2>All Quotes:</h2>
+    <div style="margin: 20px 0;">
+        {% for quote in quotes %}
+        <div style="margin: 15px 0; padding: 15px; border: 1px solid aliceblue; border-radius: 5px;">
+            <blockquote style="font-style: italic;">
+                "{{ quote }}"
+            </blockquote>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <h2>All Images:</h2>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+        {% for image in images %}
+        <div style="text-align: center;">
+            <img src="{{ image }}" alt="Walt Disney" style="max-width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
