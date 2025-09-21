@@ -1,0 +1,32 @@
+{% extends 'restaurant/base.html' %}
+{% block content %}
+
+<div>
+    <h1>Welcome to {{ restaurant_name }}</h1>
+    
+    <div>
+        <h2>About Us</h2>
+        <p>Welcome to {{ restaurant_name }}, Forest Hills ! </p>
+        <p> Your neighborhood spot for Pho</p>
+        
+        <h3>Location</h3>
+        <p>{{ location }}</p>
+        <p>Phone: {{ Phone }}</p>
+        
+        <h3>Hours of Operation</h3>
+        <table>
+            {% for hour in hours %}
+            <tr>
+                <td>{{ hour.day }}</td>
+                <td>{{ hour.time }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <div class="text-center mt-6">
+            <a href="{% url 'order' %}" class="bg-red-800 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition duration-200 inline-block">Place an Order</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

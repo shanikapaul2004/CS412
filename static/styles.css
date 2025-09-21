@@ -1,48 +1,5 @@
-/*all styling decor here*/
-
-body {
-     background-color: #fff;
-     color: slategray
-    
-}
-
-h1, h2, h3, h4, h5{
-    font-weight: normal; 
-    background: aliceblue; 
-    margin: 0; 
-
-}
-
-a, a:visited{
-    color: slategray; 
-    text-decoration: none; 
-}
-
-a:hover {
-    color: darkblue; 
-    text-decoration: none; 
-    background-color: white;
-}
-
-body{
-    max-width: 960px; 
-    margin: 20px auto; 
-    padding: 20px auto; 
-}
-
-header {
-    width: 100%; 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    background: aliceblue; 
-    position: fixed; 
-    top: 0px; 
-    z-index: 999; 
-}
-
-footer {
-    width: 100%; 
-    background: aliceblue; 
-    position: fixed; 
-    bottom: 0px; 
+body { 
+    background: lime; 
+    color: black; 
+    font-size: 20px;
 }
