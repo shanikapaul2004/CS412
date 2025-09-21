@@ -1,3 +1,1 @@
 https://cs-webapps.bu.edu/shanikap/restaurant/
-
-*unfortunately i submit it late, the static files were not working no matter what i tried and i had to make everything tailwind css instead. 
