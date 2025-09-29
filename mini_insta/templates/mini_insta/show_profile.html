@@ -1,0 +1,36 @@
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>{{ profile.username }}</h2>
+
+<main>
+    <article class="profile-detail">
+        {% if profile.profile_image_url %}
+        <img src="{{ profile.profile_image_url }}" alt="Profile picture for {{ profile.username }}">
+        {% endif %}
+        
+        <h1>{{ profile.display_name }}</h1>
+        <h3>@{{ profile.username }}</h3>
+        
+        <div class="bio-section">
+            <p class="bio-text">{{ profile.bio_text }}</p>
+        </div>
+        
+        <p style="color: #8e8e8e; font-size: 14px;">
+            <strong>Joined:</strong> {{ profile.join_date|date:"F d, Y" }}
+        </p>
+        
+        <!-- Placeholder sections for future features -->
+        <div class="profile-stats">
+            <div class="stat-item">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Posts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">0</div>
+                <div class="stat-label">Followers</div>
+            </div>
+        </div>
+    </article>
+</main>
+{% endblock %}

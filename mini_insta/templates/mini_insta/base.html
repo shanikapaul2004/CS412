@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Instagram</title>
+    <link rel="stylesheet" href="{% static 'mini_insta/styles-mini-insta.css' %}">
+</head>
+<body>
+    <header class="header">
+        <h1>Mini Instagram</h1>
+        <nav>
+            <ul style="list-style: none; padding: 0; margin: 10px 0;">
+                <li style="display: inline; margin-right: 20px;">
+                    <a href="{% url 'show_all_profiles' %}">All Profiles</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+    
+        {% endblock %}
+    </main>
+
+    <footer class="footer">
+        <p><a href="{% url 'show_all_profiles' %}">← Back to All Profiles</a></p>
+    </footer>
+</body>
+</html>
