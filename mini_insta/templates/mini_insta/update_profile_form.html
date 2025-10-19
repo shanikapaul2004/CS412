@@ -1,0 +1,41 @@
+<!--
+    file: update_profile_form.html
+    name: Shanika Paul
+    email: shanikap@bu.edu
+    date: October 10, 2025
+    description: Template to display the form for updating a user profile.
+-->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Update Profile</h2>
+
+<main style="max-width: 600px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid #dbdbdb;">
+    <form method="POST">
+        {% csrf_token %}
+        
+        <table style="width: 100%;">
+            {% for field in form %}
+            <tr>
+                <th style="text-align: left; padding: 10px 0;">{{ field.label }}</th>
+            </tr>
+            <tr>
+                <td style="padding-bottom: 20px;">{{ field }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <div style="margin-top: 20px;">
+            <input type="submit" value="Update Profile" 
+                   style="background-color: #0095f6; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 10px;">
+        </div>
+    </form>
+    
+    <!-- Cancel button -->
+    <form action="{% url 'show_profile' profile.pk %}" method="GET" style="display: inline;">
+        <input type="submit" value="Cancel" 
+               style="background-color: #dbdbdb; color: #262626; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+    </form>
+</main>
+{% endblock %}

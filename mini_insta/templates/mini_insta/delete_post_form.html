@@ -1,0 +1,40 @@
+<!--
+    file: delete_post_form.html
+    name: Shanika Paul
+    email: shanikap@bu.edu
+    date: October 10, 2025
+    description: Template to confirm deletion of a post.
+-->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Delete Post</h2>
+
+<main style="max-width: 600px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid #dbdbdb;">
+    <h3>Are you sure you want to delete this post?</h3>
+    
+    <!-- Show the post that will be deleted -->
+    <article style="background: #fafafa; border: 1px solid #dbdbdb; border-radius: 8px; padding: 20px; margin: 20px 0;">
+        {% if post.get_all_photos.first %}
+        <img src="{{ post.get_all_photos.first.get_image_url }}" alt="Post image" 
+             style="width: 100%; border-radius: 8px; margin-bottom: 10px;">
+        {% endif %}
+        <p><strong>{{ post.profile.username }}</strong> {{ post.caption }}</p>
+        <small style="color: #8e8e8e;">{{ post.timestamp|date:"F d, Y at g:i A" }}</small>
+    </article>
+    
+    <!-- Confirm delete form -->
+    <form method="POST" style="display: inline;">
+        {% csrf_token %}
+        <input type="submit" value="Yes, Delete" 
+               style="background-color: #ed4956; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; margin-right: 10px;">
+    </form>
+    
+    <!-- Cancel button -->
+    <form action="{% url 'show_profile' profile.pk %}" method="GET" style="display: inline;">
+        <input type="submit" value="Cancel" 
+               style="background-color: #dbdbdb; color: #262626; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+    </form>
+</main>
+{% endblock %}

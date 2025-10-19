@@ -1,3 +1,4 @@
+# models.py
 from django.db import models
 from django.urls import reverse
 
@@ -51,8 +52,20 @@ class Photo(models.Model):
     
     # data attributes of a Photo
     post = models.ForeignKey("Post", on_delete=models.CASCADE)
-    image_url = models.URLField()
+    image_url = models.URLField(blank=True)  # Keep for backwards compatibility
+    image_file = models.ImageField(blank=True)  # NEW: actual image file
     timestamp = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"Photo for post {self.post.pk} at {self.timestamp}"
+        '''Return a string representation of this Photo.'''
+        if self.image_file:
+            return f"Photo (file) for post {self.post.pk}"
+        else:
+            return f"Photo (URL) for post {self.post.pk}"
+    
+    def get_image_url(self):
+        '''Return the URL to the image, either from image_url or image_file.'''
+        if self.image_file:
+            return self.image_file.url
+        else:
+            return self.image_url

@@ -2,7 +2,7 @@
     file: show_profile.html
     name: Shanika Paul
     email: shanikap@bu.edu
-    date: September 28, 2025
+    date: October 10, 2025
     description: Template to display a single user profile with their posts and photos.
 -->
 
@@ -28,7 +28,7 @@
             <strong>Joined:</strong> {{ profile.join_date|date:"F d, Y" }}
         </p>
         
-        <!-- im leaving placeholder for future features -->
+        <!-- profile stats -->
         <div class="profile-stats">
             <div class="stat-item">
                 <div class="stat-number">{{ profile.get_all_posts.count }}</div>
@@ -39,9 +39,18 @@
                 <div class="stat-label">Followers</div>
             </div>
         </div>
+
+        <!-- update profile button -->
+
+        <div style="margin-top: 20px;">
+            <a href="{% url 'update_profile' profile.pk %}" 
+               style="background-color: #0095f6; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+                Update Profile
+            </a>
+        </div>
     </article>
 
-    <!-- this is to display posts -->
+    <!-- display posts -->
     <div style="max-width: 800px; margin: 20px auto;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2>Posts</h2>
@@ -51,15 +60,15 @@
         
         {% for post in profile.get_all_posts %}
         <article style="background: white; border: 1px solid #dbdbdb; border-radius: 8px; margin-bottom: 20px; padding: 20px;">
-            <!-- display if the first photo exists  -->
+            <!-- display the first photo if it exists -->
             {% if post.get_all_photos %}
                 {% with post.get_all_photos.first as first_photo %}
                 <a href="{% url 'show_post' post.pk %}">
-                    <img src="{{ first_photo.image_url }}" alt="Post image" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
+                    <img src="{{ first_photo.get_image_url }}" alt="Post image" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
                 </a>
                 {% endwith %}
             {% else %}
-                <!-- no placeholder for image here  -->
+                <!-- placeholder for no image -->
                 <a href="{% url 'show_post' post.pk %}">
                     <div style="width: 100%; height: 200px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                         <p style="color: #999;">No image</p>

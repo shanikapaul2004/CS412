@@ -2,7 +2,7 @@
     file: show_post.html
     name: Shanika Paul
     email: shanikap@bu.edu
-    date: October 3rd, 2025
+    date: October 10, 2025
     description: Template to display a single post with all associated photos and caption.
 -->
 
@@ -13,17 +13,17 @@
 
 <main>
     <article style="background: white; border: 1px solid #dbdbdb; border-radius: 8px; padding: 30px; max-width: 800px; margin: 20px auto;">
-        <!-- profile informations -->
+        <!-- profile information -->
         <div style="display: flex; align-items: center; margin-bottom: 20px;">
             <img src="{{ post.profile.profile_image_url }}" alt="{{ post.profile.username }}" 
                  style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
             <strong>{{ post.profile.username }}</strong>
         </div>
 
-        <!-- display all the photos for that post  -->
+        <!-- display all the photos for that post -->
         {% for photo in post.get_all_photos %}
         <div style="margin-bottom: 20px;">
-            <img src="{{ photo.image_url }}" alt="Post photo" 
+            <img src="{{ photo.get_image_url }}" alt="Post photo" 
                  style="width: 100%; border-radius: 8px;">
         </div>
         {% endfor %}
@@ -33,6 +33,18 @@
             <p><strong>{{ post.profile.username }}</strong> {{ post.caption }}</p>
             <small style="color: #8e8e8e;">{{ post.timestamp|date:"F d, Y at g:i A" }}</small>
         </div>
+
+        <div style="margin-top: 20px; border-top: 1px solid #dbdbdb; padding-top: 15px;">
+            <a href="{% url 'update_post' post.pk %}" 
+               style="background-color: #0095f6; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 10px;">
+                Update
+            </a>
+            <a href="{% url 'delete_post' post.pk %}" 
+               style="background-color: #ed4956; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                Delete
+            </a>
+        </div>
+        
     </article>
 </main>
 {% endblock %}
