@@ -1,6 +1,11 @@
-# views.py
+# file: views.py
+# name: Shanika Paul
+# email: shanikap@bu.edu
+# date: October 19, 2025
+# description: View classes for mini_insta application including list views, detail views, create/update/delete views, and search functionality.
+
 from django.shortcuts import render
-from .models import Profile, Post, Photo
+from .models import Profile, Post, Photo, Follow, Comment, Like
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .forms import CreatePostForm, UpdateProfileForm, UpdatePostForm
 from django.urls import reverse
@@ -32,46 +37,42 @@ class CreatePostView(CreateView):
     def get_context_data(self, **kwargs):
         '''Return the context variables for use in the template.'''
         
-        # Get the superclass context
         context = super().get_context_data(**kwargs)
-        
-        # Find the Profile from the URL parameter
+    
         pk = self.kwargs['pk']
         profile = Profile.objects.get(pk=pk)
         
-        # Add the profile to context
         context['profile'] = profile
         return context
     
     def form_valid(self, form):
         '''Handle the form submission and save the Post and Photo to the database.'''
         
-        # Get the Profile from the URL
+        #get the profile from the URL 
         pk = self.kwargs['pk']
         profile = Profile.objects.get(pk=pk)
         
-        # Attach the profile to the post (set FK)
+        #attach profile to the post by foreign key 
         form.instance.profile = profile
         
-        # Save the Post to get a pk
+        #save the post to get a pk
         post = form.save()
         
-        # Read the files from the request
+        #read the files from the request
         files = self.request.FILES.getlist('files')
         
-        # Create a Photo object for each uploaded file
+        #create a photo object for each uploaded file
         for file in files:
             photo = Photo()
             photo.post = post
             photo.image_file = file
             photo.save()
         
-        # Delegate to superclass
         return super().form_valid(form)
     
     def get_success_url(self):
         '''Return the URL to redirect to after successfully submitting form.'''
-        # Redirect back to the profile page
+        #go back to the profile page
         pk = self.kwargs['pk']
         return reverse('show_profile', kwargs={'pk': pk})
     
@@ -94,7 +95,7 @@ class DeletePostView(DeleteView):
         '''Provide context data for the template.'''
         context = super().get_context_data(**kwargs)
         
-        # Add the post and profile to context
+        #add the post and profile to context
         post = self.get_object()
         context['post'] = post
         context['profile'] = post.profile
@@ -103,10 +104,10 @@ class DeletePostView(DeleteView):
     
     def get_success_url(self):
         '''Return the URL to redirect to after successful delete.'''
-        # Get the post being deleted
+        #get the post being deleted
         post = self.get_object()
         
-        # Redirect to the profile page of the user who made the post
+        #redirect to the profile page of the user who made the post
         return reverse('show_profile', kwargs={'pk': post.profile.pk})
 
 class UpdatePostView(UpdateView):
@@ -116,3 +117,95 @@ class UpdatePostView(UpdateView):
     template_name = 'mini_insta/update_post_form.html'
     model = Post
     context_object_name = 'post'
+    
+class ShowFollowersDetailView(DetailView):
+    '''View to show all followers of a profile.'''
+    model = Profile
+    template_name = 'mini_insta/show_followers.html'
+    context_object_name = 'profile'
+
+
+class ShowFollowingDetailView(DetailView):
+    '''View to show all profiles that this profile follows.'''
+    model = Profile
+    template_name = 'mini_insta/show_following.html'
+    context_object_name = 'profile'
+    
+class PostFeedListView(ListView):
+    '''View to show the post feed for a profile (posts from profiles they follow).'''
+    model = Post
+    template_name = 'mini_insta/show_feed.html'
+    context_object_name = 'posts'
+    
+    def get_queryset(self):
+        '''Get the posts for the feed - posts from profiles this profile follows.'''
+        #get the profile from URL
+        profile_pk = self.kwargs['pk']
+        profile = Profile.objects.get(pk=profile_pk)
+        
+        #get the post feed for this profile
+        return profile.get_post_feed()
+    
+    def get_context_data(self, **kwargs):
+        '''Add the profile to the context.'''
+        context = super().get_context_data(**kwargs)
+        
+        #get the profile from the URL
+        profile_pk = self.kwargs['pk']
+        profile = Profile.objects.get(pk=profile_pk)
+        context['profile'] = profile
+        
+        return context
+    
+class SearchView(ListView):
+    '''View to search for profiles and posts.'''
+    model = Post
+    template_name = 'mini_insta/search_results.html'
+    context_object_name = 'posts'
+    
+    def dispatch(self, request, *args, **kwargs):
+        '''Handle the request - check if we have a query or need to show the search form.'''
+        
+        #check if 'query' is in the GET parameters
+        if 'query' not in request.GET or not request.GET['query']:
+            # No query yet, show the search form
+            profile_pk = self.kwargs['pk']
+            profile = Profile.objects.get(pk=profile_pk)
+            context = {'profile': profile}
+            return render(request, 'mini_insta/search.html', context)
+        
+        #query exists, continue with normal ListView processing
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        '''Get posts that match the search query.'''
+        query = self.request.GET.get('query', '')
+        
+        #filter posts where caption contains the query
+        posts = Post.objects.filter(caption__icontains=query)
+        return posts
+    
+    def get_context_data(self, **kwargs):
+        '''Add profile, query, and matching profiles to context.'''
+        context = super().get_context_data(**kwargs)
+        
+        #get the profile
+        profile_pk = self.kwargs['pk']
+        profile = Profile.objects.get(pk=profile_pk)
+        context['profile'] = profile
+        
+        #get the query
+        query = self.request.GET.get('query', '')
+        context['query'] = query
+        
+        #get matching profiles (search in username, display_name, and bio_text)
+        profiles = Profile.objects.filter(
+            username__icontains=query
+        ) | Profile.objects.filter(
+            display_name__icontains=query
+        ) | Profile.objects.filter(
+            bio_text__icontains=query
+        )
+        context['profiles'] = profiles
+        
+        return context

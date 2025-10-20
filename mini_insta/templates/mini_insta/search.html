@@ -1,0 +1,41 @@
+<!--
+    file: search.html
+    name: Shanika Paul
+    email: shanikap@bu.edu
+    date: October 19, 2025
+    description: Template to display the search form.
+-->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Search</h2>
+
+<main style="max-width: 600px; margin: 20px auto;">
+    <div style="background: white; border: 1px solid #dbdbdb; border-radius: 8px; padding: 30px;">
+        <h3>Search for Profiles and Posts</h3>
+        
+        <form action="{% url 'search' profile.pk %}" method="GET">
+            <div style="margin-bottom: 20px;">
+                <label for="query" style="display: block; margin-bottom: 10px; font-weight: 600;">Search Query:</label>
+                <input type="text" name="query" id="query" 
+                       style="width: 100%; padding: 10px; border: 1px solid #dbdbdb; border-radius: 8px; font-size: 16px;"
+                       placeholder="Enter username, name, bio, or post caption..."
+                       required>
+            </div>
+            
+            <button type="submit" 
+                    style="background-color: #0095f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 16px; width: 100%;">
+                🔍 Search
+            </button>
+        </form>
+        
+        <div style="margin-top: 20px;">
+            <a href="{% url 'show_profile' profile.pk %}" 
+               style="background-color: #dbdbdb; color: #262626; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
+                Back to Profile
+            </a>
+        </div>
+    </div>
+</main>
+{% endblock %}

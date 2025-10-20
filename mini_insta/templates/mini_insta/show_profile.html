@@ -35,8 +35,16 @@
                 <div class="stat-label">Posts</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">0</div>
-                <div class="stat-label">Followers</div>
+                <a href="{% url 'show_followers' profile.pk %}" style="text-decoration: none; color: inherit;">
+                    <div class="stat-number">{{ profile.get_num_followers }}</div>
+                    <div class="stat-label">Followers</div>
+                </a>
+            </div>
+            <div class="stat-item">
+                <a href="{% url 'show_following' profile.pk %}" style="text-decoration: none; color: inherit;">
+                    <div class="stat-number">{{ profile.get_num_following }}</div>
+                    <div class="stat-label">Following</div>
+                </a>
             </div>
         </div>
 
@@ -51,12 +59,23 @@
     </article>
 
     <!-- display posts -->
-    <div style="max-width: 800px; margin: 20px auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2>Posts</h2>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Posts</h2>
+        <div>
+            <a href="{% url 'search' profile.pk %}" 
+               style="background-color: #8e8e8e; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 10px;">
+                🔍 Search
+            </a>
+            <a href="{% url 'show_feed' profile.pk %}" 
+               style="background-color: #262626; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 10px;">
+                📰 Feed
+            </a>
             <a href="{% url 'create_post' profile.pk %}" 
-               style="background-color: #0095f6; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600;">Create Post</a>
+               style="background-color: #0095f6; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                Create Post
+            </a>
         </div>
+    </div>
         
         {% for post in profile.get_all_posts %}
         <article style="background: white; border: 1px solid #dbdbdb; border-radius: 8px; margin-bottom: 20px; padding: 20px;">

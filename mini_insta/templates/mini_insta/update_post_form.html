@@ -13,7 +13,7 @@
 
 <main style="max-width: 600px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid #dbdbdb;">
     
-    <!-- Show the post images -->
+    <!-- displaying post images-->
     {% if post.get_all_photos %}
     <div style="margin-bottom: 20px;">
         {% for photo in post.get_all_photos %}
@@ -43,7 +43,7 @@
         </div>
     </form>
     
-    <!-- Cancel button -->
+    <!-- button to cancel -->
     <form action="{% url 'show_post' post.pk %}" method="GET" style="display: inline;">
         <input type="submit" value="Cancel" 
                style="background-color: #dbdbdb; color: #262626; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">

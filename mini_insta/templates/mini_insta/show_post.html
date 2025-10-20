@@ -2,8 +2,8 @@
     file: show_post.html
     name: Shanika Paul
     email: shanikap@bu.edu
-    date: October 10, 2025
-    description: Template to display a single post with all associated photos and caption.
+    date: October 19, 2025
+    description: Template to display a single post with all associated photos, caption, likes, and comments.
 -->
 
 {% extends 'mini_insta/base.html' %}
@@ -28,12 +28,33 @@
         </div>
         {% endfor %}
 
-        <!-- have the timestamp and the caption visible in the post -->
-        <div style="margin-top: 15px;">
+        <!-- like count  -->
+        <div style="margin-top: 15px; margin-bottom: 10px;">
+            <strong>{{ post.get_likes.count }} likes</strong>
+        </div>
+
+        <!-- caption and timestamp -->
+        <div style="margin-bottom: 15px;">
             <p><strong>{{ post.profile.username }}</strong> {{ post.caption }}</p>
             <small style="color: #8e8e8e;">{{ post.timestamp|date:"F d, Y at g:i A" }}</small>
         </div>
 
+        <!-- comments section -->
+        <div style="border-top: 1px solid #dbdbdb; padding-top: 15px;">
+            <h4>Comments</h4>
+            {% for comment in post.get_all_comments %}
+            <div style="margin-bottom: 10px;">
+                <p style="margin: 5px 0;">
+                    <strong>{{ comment.profile.username }}</strong> {{ comment.text }}
+                </p>
+                <small style="color: #8e8e8e;">{{ comment.timestamp|date:"M d, Y at g:i A" }}</small>
+            </div>
+            {% empty %}
+            <p style="color: #8e8e8e;">No comments yet.</p>
+            {% endfor %}
+        </div>
+
+        <!-- update and delete button  -->
         <div style="margin-top: 20px; border-top: 1px solid #dbdbdb; padding-top: 15px;">
             <a href="{% url 'update_post' post.pk %}" 
                style="background-color: #0095f6; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 10px;">
@@ -44,7 +65,6 @@
                 Delete
             </a>
         </div>
-        
     </article>
 </main>
 {% endblock %}

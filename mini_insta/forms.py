@@ -1,4 +1,9 @@
-# forms.py
+# file: forms.py
+# name: Shanika Paul
+# email: shanikap@bu.edu
+# date: October 19, 2025
+# description: Form classes for mini_insta application for creating and updating posts and profiles.
+
 from django import forms
 from .models import Post, Photo, Profile
 

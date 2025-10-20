@@ -1,0 +1,43 @@
+<!--
+    file: show_followers.html
+    name: Shanika Paul
+    email: shanikap@bu.edu
+    date: October 19, 2025
+    description: Template to display all followers of a profile.
+-->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h2>Followers of {{ profile.username }}</h2>
+
+<main style="max-width: 800px; margin: 20px auto;">
+    <div style="background: white; border: 1px solid #dbdbdb; border-radius: 8px; padding: 20px;">
+        <h3>{{ profile.get_num_followers }} Followers</h3>
+        
+        {% if profile.get_followers %}
+            {% for follower in profile.get_followers %}
+            <article style="display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #dbdbdb;">
+                <img src="{{ follower.profile_image_url }}" alt="{{ follower.username }}" 
+                     style="width: 50px; height: 50px; border-radius: 50%; margin-right: 15px;">
+                <div style="flex-grow: 1;">
+                    <a href="{% url 'show_profile' follower.pk %}" style="text-decoration: none; color: #262626;">
+                        <strong>{{ follower.username }}</strong>
+                    </a>
+                    <p style="color: #8e8e8e; margin: 0;">{{ follower.display_name }}</p>
+                </div>
+            </article>
+            {% endfor %}
+        {% else %}
+            <p style="color: #8e8e8e; text-align: center; padding: 20px;">No followers yet.</p>
+        {% endif %}
+        
+        <div style="margin-top: 20px;">
+            <a href="{% url 'show_profile' profile.pk %}" 
+               style="background-color: #0095f6; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                Back to Profile
+            </a>
+        </div>
+    </div>
+</main>
+{% endblock %}
