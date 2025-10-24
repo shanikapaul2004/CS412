@@ -22,7 +22,7 @@ class Profile(models.Model):
     join_date = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return f"{self.username} ({self.display_name})"
+        return f"Post by {self.profile.username} at {self.timestamp}"
     
     def get_absolute_url(self):
         '''Return the URL to display this Profile.'''
@@ -102,9 +102,9 @@ class Post(models.Model):
         '''Check if this post is liked by a given profile.'''
         return Like.objects.filter(post=self, profile=profile).exists()
 
-def get_like_count(self):
-        '''Return the number of likes on this post.'''
-        return Like.objects.filter(post=self).count()
+    def get_like_count(self):
+            '''Return the number of likes on this post.'''
+            return Like.objects.filter(post=self).count()
 
 
 class Photo(models.Model):

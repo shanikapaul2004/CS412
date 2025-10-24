@@ -13,8 +13,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin  ## NEW for Task 1
 from django.contrib.auth.forms import UserCreationForm  ## NEW for Task 3
 from django.contrib.auth.models import User  ## NEW for Task 3
 from django.contrib.auth import login  ## NEW for Task 3
-from django.shortcuts import redirect
-from django.views.generic import View
+from django.shortcuts import redirect, get_object_or_404
+from django.views import View
 
 
 class ProfileListView(ListView):
@@ -406,3 +406,13 @@ class UnlikePostView(LoginRequiredMixin, View):
         
         # Redirect back to the post page
         return redirect('show_post', pk=post.pk)
+    
+class LoggedInProfileMixin(LoginRequiredMixin):
+    login_url = None  # fallback if get_login_url not overridden
+
+    def get_login_url(self):
+        # central place to point to your app’s login route
+        return reverse('mini_insta_login')
+
+    def get_logged_in_profile(self):
+        return get_object_or_404(Profile, user=self.request.user)

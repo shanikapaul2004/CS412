@@ -143,3 +143,8 @@ CS_DEPLOYMENT_HOSTNAME = 'cs-webapps.bu.edu'
 if socket.gethostname() == CS_DEPLOYMENT_HOSTNAME:
     STATIC_URL = '/shanikap/static/'
     MEDIA_URL = '/shanikap/media/'
+    
+    
+LOGIN_URL = '/mini_insta/login/'
+LOGIN_REDIRECT_URL = '/mini_insta/'
+LOGOUT_REDIRECT_URL = '/mini_insta/'  
