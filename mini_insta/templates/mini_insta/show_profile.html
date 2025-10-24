@@ -2,106 +2,121 @@
     file: show_profile.html
     name: Shanika Paul
     email: shanikap@bu.edu
-    date: October 10, 2025
-    description: Template to display a single user profile with their posts and photos.
+    description: Profile page with follow/unfollow functionality (Task 4)
 -->
 
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
-<h2>{{ profile.username }}</h2>
 
-<main>
-    <article class="profile-detail">
-        {% if profile.profile_image_url %}
-        <img src="{{ profile.profile_image_url }}" alt="Profile picture for {{ profile.username }}">
-        {% endif %}
-        
-        <h1>{{ profile.display_name }}</h1>
-        <h3>@{{ profile.username }}</h3>
-        
-        <div class="bio-section">
-            <p class="bio-text">{{ profile.bio_text }}</p>
-        </div>
-        
-        <p style="color: #8e8e8e; font-size: 14px;">
-            <strong>Joined:</strong> {{ profile.join_date|date:"F d, Y" }}
-        </p>
-        
-        <!-- profile stats -->
-        <div class="profile-stats">
-            <div class="stat-item">
-                <div class="stat-number">{{ profile.get_all_posts.count }}</div>
-                <div class="stat-label">Posts</div>
+<div class="profile-container">
+    <h2>{{ profile.display_name }}</h2>
+    <p><strong>@{{ profile.username }}</strong></p>
+    
+    <!-- Profile Image -->
+    {% if profile.profile_image_url %}
+        <img src="{{ profile.profile_image_url }}" alt="Profile picture" style="max-width: 200px; border-radius: 50%;">
+    {% endif %}
+    
+    <!-- Bio -->
+    <p>{{ profile.bio_text }}</p>
+    
+    <!-- Stats -->
+    <p>
+        <strong>Posts:</strong> {{ profile.get_all_posts.count }} | 
+        <strong>Followers:</strong> <a href="{% url 'show_followers' profile.pk %}">{{ profile.get_num_followers }}</a> | 
+        <strong>Following:</strong> <a href="{% url 'show_following' profile.pk %}">{{ profile.get_num_following }}</a>
+    </p>
+    
+    <!-- ============================================ -->
+    <!-- IMPORTANT: Action buttons with authentication -->
+    <!-- ============================================ -->
+    
+    {% if request.user.is_authenticated %}
+        <!-- Check if the logged-in user IS the owner of this profile -->
+        {% if request.user == profile.user %}
+            <!-- These actions are ONLY for YOUR OWN profile -->
+            <div class="profile-actions">
+                <h3>Your Actions:</h3>
+                <a href="{% url 'create_post' %}">Create Post</a> | 
+                <a href="{% url 'update_profile' %}">Update Profile</a> | 
+                <a href="{% url 'show_feed' %}">View Feed</a> | 
+                <a href="{% url 'search' %}">Search</a>
             </div>
-            <div class="stat-item">
-                <a href="{% url 'show_followers' profile.pk %}" style="text-decoration: none; color: inherit;">
-                    <div class="stat-number">{{ profile.get_num_followers }}</div>
-                    <div class="stat-label">Followers</div>
-                </a>
-            </div>
-            <div class="stat-item">
-                <a href="{% url 'show_following' profile.pk %}" style="text-decoration: none; color: inherit;">
-                    <div class="stat-number">{{ profile.get_num_following }}</div>
-                    <div class="stat-label">Following</div>
-                </a>
-            </div>
-        </div>
-
-        <!-- update profile button -->
-
-        <div style="margin-top: 20px;">
-            <a href="{% url 'update_profile' profile.pk %}" 
-               style="background-color: #0095f6; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block;">
-                Update Profile
-            </a>
-        </div>
-    </article>
-
-    <!-- display posts -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2>Posts</h2>
-        <div>
-            <a href="{% url 'search' profile.pk %}" 
-               style="background-color: #8e8e8e; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 10px;">
-                🔍 Search
-            </a>
-            <a href="{% url 'show_feed' profile.pk %}" 
-               style="background-color: #262626; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 10px;">
-                📰 Feed
-            </a>
-            <a href="{% url 'create_post' profile.pk %}" 
-               style="background-color: #0095f6; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                Create Post
-            </a>
-        </div>
-    </div>
-        
-        {% for post in profile.get_all_posts %}
-        <article style="background: white; border: 1px solid #dbdbdb; border-radius: 8px; margin-bottom: 20px; padding: 20px;">
-            <!-- display the first photo if it exists -->
-            {% if post.get_all_photos %}
-                {% with post.get_all_photos.first as first_photo %}
-                <a href="{% url 'show_post' post.pk %}">
-                    <img src="{{ first_photo.get_image_url }}" alt="Post image" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
-                </a>
+        {% else %}
+            <!-- This is someone else's profile - show follow/unfollow button -->
+            <div class="profile-actions">
+                {% with logged_in_profile=request.user.profile_set.first %}
+                    {% if logged_in_profile %}
+                        {% if logged_in_profile.is_following %}
+                            <!-- Already following - show Unfollow button -->
+                            <form method="POST" action="{% url 'delete_follow' profile.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px;">Unfollow</button>
+                            </form>
+                        {% else %}
+                            <!-- Not following - show Follow button -->
+                            <form method="POST" action="{% url 'follow' profile.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="background-color: #007bff; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px;">Follow</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
                 {% endwith %}
-            {% else %}
-                <!-- placeholder for no image -->
-                <a href="{% url 'show_post' post.pk %}">
-                    <div style="width: 100%; height: 200px; background-color: #f0f0f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                        <p style="color: #999;">No image</p>
-                    </div>
-                </a>
-            {% endif %}
-            
-            <div>
-                <strong>{{ profile.username }}</strong>
-                <p>{{ post.caption }}</p>
-                <small style="color: #8e8e8e;">{{ post.timestamp|date:"M d, Y" }}</small>
             </div>
-        </article>
-        {% endfor %}
-    </div>
-</main>
+        {% endif %}
+    {% else %}
+        <!-- User is not logged in - show login prompt -->
+        <p><a href="{% url 'login' %}">Log in</a> to follow this profile or interact with posts</p>
+    {% endif %}
+    
+    <!-- ============================================ -->
+    <!-- Posts Section -->
+    <!-- ============================================ -->
+    
+    <h3>Posts</h3>
+    
+    {% if profile.get_all_posts %}
+        <div class="posts-grid">
+            {% for post in profile.get_all_posts %}
+                <div class="post-item" style="border: 1px solid #ddd; padding: 15px; margin-bottom: 20px;">
+                    <!-- Link to full post -->
+                    <a href="{% url 'show_post' post.pk %}">
+                        <!-- Show first photo if available -->
+                        {% with post.get_all_photos.first as first_photo %}
+                            {% if first_photo %}
+                                <img src="{{ first_photo.get_image_url }}" 
+                                     alt="Post image" 
+                                     style="max-width: 100%; height: auto;">
+                            {% endif %}
+                        {% endwith %}
+                    </a>
+                    
+                    <!-- Post caption -->
+                    <p><strong>{{ post.profile.username }}:</strong> {{ post.caption|truncatewords:20 }}</p>
+                    <p><small>{{ post.timestamp }}</small></p>
+                    
+                    <!-- Like count -->
+                    <p>❤️ {{ post.get_like_count }} likes</p>
+                    
+                    <!-- Edit/Delete buttons (only for YOUR posts) -->
+                    {% if request.user.is_authenticated and request.user == post.profile.user %}
+                        <div class="post-actions">
+                            <a href="{% url 'update_post' post.pk %}">Edit</a> | 
+                            <a href="{% url 'delete_post' post.pk %}">Delete</a>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No posts yet.</p>
+        
+        {% if request.user.is_authenticated and request.user == profile.user %}
+            <p><a href="{% url 'create_post' %}">Create your first post!</a></p>
+        {% endif %}
+    {% endif %}
+    
+</div>
+
 {% endblock %}

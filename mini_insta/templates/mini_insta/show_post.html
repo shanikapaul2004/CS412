@@ -2,69 +2,143 @@
     file: show_post.html
     name: Shanika Paul
     email: shanikap@bu.edu
-    date: October 19, 2025
-    description: Template to display a single post with all associated photos, caption, likes, and comments.
+    description: Post detail page with like/unlike functionality (Task 4)
 -->
 
 {% extends 'mini_insta/base.html' %}
 
 {% block content %}
-<h2>Post by {{ post.profile.username }}</h2>
 
-<main>
-    <article style="background: white; border: 1px solid #dbdbdb; border-radius: 8px; padding: 30px; max-width: 800px; margin: 20px auto;">
-        <!-- profile information -->
-        <div style="display: flex; align-items: center; margin-bottom: 20px;">
-            <img src="{{ post.profile.profile_image_url }}" alt="{{ post.profile.username }}" 
-                 style="width: 40px; height: 40px; border-radius: 50%; margin-right: 10px;">
-            <strong>{{ post.profile.username }}</strong>
-        </div>
-
-        <!-- display all the photos for that post -->
+<div class="post-container">
+    <h2>Post by <a href="{% url 'show_profile' post.profile.pk %}">@{{ post.profile.username }}</a></h2>
+    
+    <!-- ============================================ -->
+    <!-- Post Photos -->
+    <!-- ============================================ -->
+    
+    <div class="post-photos">
         {% for photo in post.get_all_photos %}
-        <div style="margin-bottom: 20px;">
-            <img src="{{ photo.get_image_url }}" alt="Post photo" 
-                 style="width: 100%; border-radius: 8px;">
-        </div>
+            <img src="{{ photo.get_image_url }}" 
+                 alt="Post photo" 
+                 style="max-width: 600px; width: 100%; margin: 10px 0; border: 1px solid #ddd;">
         {% endfor %}
-
-        <!-- like count  -->
-        <div style="margin-top: 15px; margin-bottom: 10px;">
-            <strong>{{ post.get_likes.count }} likes</strong>
+    </div>
+    
+    <!-- ============================================ -->
+    <!-- Post Caption -->
+    <!-- ============================================ -->
+    
+    <div class="post-caption" style="margin: 20px 0;">
+        <p><strong>{{ post.profile.display_name }}:</strong> {{ post.caption }}</p>
+        <p><small>{{ post.timestamp }}</small></p>
+    </div>
+    
+    <!-- ============================================ -->
+    <!-- TASK 4: Like/Unlike Button -->
+    <!-- ============================================ -->
+    
+    <div class="post-likes" style="margin: 20px 0; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+        <p><strong>❤️ {{ post.get_like_count }} likes</strong></p>
+        
+        {% if request.user.is_authenticated %}
+            <!-- Get the logged-in user's profile -->
+            {% with logged_in_profile=request.user.profile_set.first %}
+                
+                {% if logged_in_profile %}
+                    <!-- Don't allow liking your own post -->
+                    {% if request.user != post.profile.user %}
+                        
+                        {% if post.is_liked_by logged_in_profile %}
+                            <!-- Already liked - show Unlike button -->
+                            <form method="POST" action="{% url 'delete_like' post.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="background-color: #dc3545; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px;">
+                                    💔 Unlike
+                                </button>
+                            </form>
+                        {% else %}
+                            <!-- Not liked - show Like button -->
+                            <form method="POST" action="{% url 'like' post.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="background-color: #28a745; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 5px;">
+                                    ❤️ Like
+                                </button>
+                            </form>
+                        {% endif %}
+                        
+                    {% else %}
+                        <!-- This is your own post -->
+                        <p><em>(You can't like your own post)</em></p>
+                    {% endif %}
+                {% endif %}
+                
+            {% endwith %}
+        {% else %}
+            <!-- User is not logged in -->
+            <p><a href="{% url 'login' %}">Log in</a> to like this post</p>
+        {% endif %}
+    </div>
+    
+    <!-- ============================================ -->
+    <!-- Edit/Delete Buttons (for post owner) -->
+    <!-- ============================================ -->
+    
+    {% if request.user.is_authenticated and request.user == post.profile.user %}
+        <div class="post-actions" style="margin: 20px 0;">
+            <a href="{% url 'update_post' post.pk %}" style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">Edit Post</a>
+            <a href="{% url 'delete_post' post.pk %}" style="padding: 10px 15px; background-color: #dc3545; color: white; text-decoration: none; border-radius: 5px; margin-left: 10px;">Delete Post</a>
         </div>
-
-        <!-- caption and timestamp -->
-        <div style="margin-bottom: 15px;">
-            <p><strong>{{ post.profile.username }}</strong> {{ post.caption }}</p>
-            <small style="color: #8e8e8e;">{{ post.timestamp|date:"F d, Y at g:i A" }}</small>
-        </div>
-
-        <!-- comments section -->
-        <div style="border-top: 1px solid #dbdbdb; padding-top: 15px;">
-            <h4>Comments</h4>
+    {% endif %}
+    
+    <!-- ============================================ -->
+    <!-- Comments Section -->
+    <!-- ============================================ -->
+    
+    <div class="post-comments" style="margin: 30px 0;">
+        <h3>Comments</h3>
+        
+        {% if post.get_all_comments %}
             {% for comment in post.get_all_comments %}
-            <div style="margin-bottom: 10px;">
-                <p style="margin: 5px 0;">
-                    <strong>{{ comment.profile.username }}</strong> {{ comment.text }}
-                </p>
-                <small style="color: #8e8e8e;">{{ comment.timestamp|date:"M d, Y at g:i A" }}</small>
-            </div>
-            {% empty %}
-            <p style="color: #8e8e8e;">No comments yet.</p>
+                <div class="comment" style="padding: 10px; border-bottom: 1px solid #eee; margin-bottom: 10px;">
+                    <p>
+                        <strong><a href="{% url 'show_profile' comment.profile.pk %}">{{ comment.profile.username }}</a>:</strong>
+                        {{ comment.text }}
+                    </p>
+                    <p><small>{{ comment.timestamp }}</small></p>
+                </div>
             {% endfor %}
-        </div>
+        {% else %}
+            <p>No comments yet. Be the first to comment!</p>
+        {% endif %}
+    </div>
+    
+    <!-- ============================================ -->
+    <!-- Who Liked This Post -->
+    <!-- ============================================ -->
+    
+    <div class="post-liked-by" style="margin: 30px 0; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+        <h4>Liked by:</h4>
+        {% if post.get_likes %}
+            <ul style="list-style: none; padding: 0;">
+                {% for like in post.get_likes %}
+                    <li style="padding: 5px 0;">
+                        <a href="{% url 'show_profile' like.profile.pk %}">
+                            {{ like.profile.username }}
+                        </a>
+                        <small style="color: #666;">({{ like.timestamp }})</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No likes yet.</p>
+        {% endif %}
+    </div>
+    
+    <!-- Back to profile link -->
+    <p style="margin-top: 30px;">
+        <a href="{% url 'show_profile' post.profile.pk %}">← Back to {{ post.profile.username }}'s profile</a>
+    </p>
+    
+</div>
 
-        <!-- update and delete button  -->
-        <div style="margin-top: 20px; border-top: 1px solid #dbdbdb; padding-top: 15px;">
-            <a href="{% url 'update_post' post.pk %}" 
-               style="background-color: #0095f6; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; margin-right: 10px;">
-                Update
-            </a>
-            <a href="{% url 'delete_post' post.pk %}" 
-               style="background-color: #ed4956; color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                Delete
-            </a>
-        </div>
-    </article>
-</main>
 {% endblock %}

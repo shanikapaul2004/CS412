@@ -1,0 +1,37 @@
+<!--
+    file: create_profile_form.html
+    name: Shanika Paul
+    email: shanikap@bu.edu
+    description: Template for creating a new Profile (includes User registration)
+-->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+
+<h2>Create Your Profile</h2>
+
+<p>Fill out the information below to create your account and profile.</p>
+
+<form method="POST" action="{% url 'create_profile' %}">
+    {% csrf_token %}
+    
+    <fieldset>
+        <legend>Account Information</legend>
+        <!-- Display the UserCreationForm (username, password1, password2) -->
+        {{ user_form.as_p }}
+    </fieldset>
+    
+    <fieldset>
+        <legend>Profile Information</legend>
+        <!-- Display the CreateProfileForm (username, display_name, bio, image) -->
+        {{ form.as_p }}
+    </fieldset>
+    
+    <input type="submit" value="Create Profile">
+</form>
+
+<hr>
+<p>Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
+
+{% endblock %}

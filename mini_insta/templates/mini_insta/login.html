@@ -1,0 +1,26 @@
+<!-- file: mini_insta/templates/mini_insta/login.html -->
+<!-- Login page for user authentication -->
+
+{% extends 'mini_insta/base.html' %}
+
+{% block content %}
+<h1>Login to Mini Insta</h1>
+
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <!-- Handle redirect after login -->
+    {% if request.GET.next %}
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
+    {% else %}
+    <input type="hidden" name="next" value="{% url 'show_all_profiles' %}">
+    {% endif %}
+    
+    <input type="submit" value="Login">
+</form>
+
+<hr>
+<p>Don't have an account? <a href="{% url 'register' %}">Register here</a>.</p>
+
+{% endblock %}

@@ -4,6 +4,7 @@
     email: shanikap@bu.edu
     date: October 3rd, 2025
     description: base template which includes the HTML structure, navigation, and styling
+
 -->
 
 {% load static %}
@@ -20,10 +21,50 @@
         <h1>Mini Instagram</h1>
         <nav>
             <ul style="list-style: none; padding: 0; margin: 10px 0;">
+                <!-- Link available to everyone -->
                 <li style="display: inline; margin-right: 20px;">
                     <a href="{% url 'show_all_profiles' %}">All Profiles</a>
                 </li>
+                
+                {% if request.user.is_authenticated %}
+                    <!-- Links only for logged-in users -->
+                    <li style="display: inline; margin-right: 20px;">
+                        <a href="{% url 'show_profile_self' %}">My Profile</a>
+                    </li>
+                    <li style="display: inline; margin-right: 20px;">
+                        <a href="{% url 'show_feed' %}">Feed</a>
+                    </li>
+                    <li style="display: inline; margin-right: 20px;">
+                        <a href="{% url 'create_post' %}">Create Post</a>
+                    </li>
+                    <li style="display: inline; margin-right: 20px;">
+                        <a href="{% url 'update_profile' %}">Update Profile</a>
+                    </li>
+                    <li style="display: inline; margin-right: 20px;">
+                        <a href="{% url 'search' %}">Search</a>
+                    </li>
+                    <li style="display: inline; margin-right: 20px;">
+                        <a href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <!-- Links only for non-logged-in users -->
+                    <li style="display: inline; margin-right: 20px;">
+                        <a href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li style="display: inline; margin-right: 20px;">
+                        <a href="{% url 'register' %}">Register</a>
+                    </li>
+                {% endif %}
             </ul>
+            
+            <!-- Display login status -->
+            <p style="margin: 5px 0; font-style: italic; color: #666;">
+                {% if request.user.is_authenticated %}
+                    Logged in as: <strong>{{ request.user.username }}</strong>
+                {% else %}
+                    Not logged in
+                {% endif %}
+            </p>
         </nav>
     </header>
 
@@ -34,7 +75,7 @@
     </main>
 
     <footer class="footer">
-        <p><a href="{% url 'show_all_profiles' %}"> ← Back to All Profiles</a></p>
+        <p><a href="{% url 'show_all_profiles' %}">← Back to All Profiles</a></p>
     </footer>
 </body>
 </html>

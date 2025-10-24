@@ -7,12 +7,14 @@
 
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User  ## NEW
 
 # Create your models here.
 class Profile(models.Model):
     '''The data of an Instagram user profile.'''
     
     # defining data attributes 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  ## NEW: Link to Django User
     username = models.CharField(max_length=30, unique=True)
     display_name = models.CharField(max_length=50)
     profile_image_url = models.URLField()
@@ -59,6 +61,12 @@ class Profile(models.Model):
         posts = Post.objects.filter(profile__in=following).order_by('-timestamp')
         return posts
 
+    def is_following(self, other_profile):
+        '''Check if this profile is following another profile.'''
+        return Follow.objects.filter(
+            follower_profile=self,
+            profile=other_profile
+        ).exists()
 
 class Post(models.Model):
     '''The data of an Instagram post.'''
@@ -89,6 +97,14 @@ class Post(models.Model):
         '''Return all Likes for this Post.'''
         likes = Like.objects.filter(post=self)
         return likes
+    
+    def is_liked_by(self, profile):
+        '''Check if this post is liked by a given profile.'''
+        return Like.objects.filter(post=self, profile=profile).exists()
+
+def get_like_count(self):
+        '''Return the number of likes on this post.'''
+        return Like.objects.filter(post=self).count()
 
 
 class Photo(models.Model):

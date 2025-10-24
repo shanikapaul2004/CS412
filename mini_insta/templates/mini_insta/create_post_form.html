@@ -12,7 +12,7 @@
 <h2>Create a Post for {{ profile.username }}</h2>
 
 <main style="max-width: 600px; margin: 20px auto; background: white; padding: 30px; border-radius: 8px; border: 1px solid #dbdbdb;">
-    <form action="{% url 'create_post' profile.pk %}" method="POST" enctype="multipart/form-data">
+    <form action="{% url 'create_post' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         
         <table style="width: 100%;">
