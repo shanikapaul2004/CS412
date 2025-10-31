@@ -1,0 +1,100 @@
+<!-- file: filter_form.html -->
+<!-- name: Shanika Paul -->
+<!-- email: shanikap@bu.edu -->
+<!-- date: October 31, 2025 -->
+<!-- description: Reusable filter form for voter search by party, birth year, voter score, and elections. -->
+
+<h3>Filter Voters</h3>
+<form method="get">
+    <table>
+        <tr>
+            <th>Party Affiliation:</th>
+            <td>
+                <select name="party_affiliation">
+                    <option value="">All</option>
+                    <option value="D ">Democrat (D)</option>
+                    <option value="R ">Republican (R)</option>
+                    <option value="U ">Unenrolled (U)</option>
+                    <option value="CC">Green-Rainbow (CC)</option>
+                    <option value="L ">Libertarian (L)</option>
+                    <option value="O ">Other (O)</option>
+                    <option value="T ">United Independent Party (T)</option>
+                    <option value="Q ">MA Independent Party (Q)</option>
+                    <option value="FF">America First Party (FF)</option>
+                    <option value="J ">Reform Party (J)</option>
+                </select>
+            </td>
+        </tr>
+        
+        <tr>
+            <th>Birth Year (Min):</th>
+            <td>
+                <select name="min_birth_year">
+                    <option value="">No minimum</option>
+                    <option value="1920">1920</option>
+                    <option value="1930">1930</option>
+                    <option value="1940">1940</option>
+                    <option value="1950">1950</option>
+                    <option value="1960">1960</option>
+                    <option value="1970">1970</option>
+                    <option value="1980">1980</option>
+                    <option value="1990">1990</option>
+                    <option value="2000">2000</option>
+                    <option value="2006">2006</option>
+                </select>
+            </td>
+        </tr>
+        
+        <tr>
+            <th>Birth Year (Max):</th>
+            <td>
+                <select name="max_birth_year">
+                    <option value="">No maximum</option>
+                    <option value="1920">1920</option>
+                    <option value="1930">1930</option>
+                    <option value="1940">1940</option>
+                    <option value="1950">1950</option>
+                    <option value="1960">1960</option>
+                    <option value="1970">1970</option>
+                    <option value="1980">1980</option>
+                    <option value="1990">1990</option>
+                    <option value="2000">2000</option>
+                    <option value="2006">2006</option>
+                </select>
+            </td>
+        </tr>
+        
+        <tr>
+            <th>Voter Score:</th>
+            <td>
+                <select name="voter_score">
+                    <option value="">All</option>
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </td>
+        </tr>
+        
+        <tr>
+            <th>Voted in Elections:</th>
+            <td>
+                <input type="checkbox" name="v20state" value="True"> 2020 State<br>
+                <input type="checkbox" name="v21town" value="True"> 2021 Town<br>
+                <input type="checkbox" name="v21primary" value="True"> 2021 Primary<br>
+                <input type="checkbox" name="v22general" value="True"> 2022 General<br>
+                <input type="checkbox" name="v23town" value="True"> 2023 Town<br>
+            </td>
+        </tr>
+        
+        <tr>
+            <td colspan="2">
+                <input type="submit" value="Filter">
+                <a href="{% url 'voters' %}">Reset</a>
+            </td>
+        </tr>
+    </table>
+</form>

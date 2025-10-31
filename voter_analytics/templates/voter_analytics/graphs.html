@@ -1,0 +1,33 @@
+<!-- file: graphs.html -->
+<!-- name: Shanika Paul -->
+<!-- email: shanikap@bu.edu -->
+<!-- date: October 31, 2025 -->
+<!-- description: Template to display Plotly graphs showing voter analytics with filtering capability. -->
+
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Voter Analytics - Graphs</h1>
+    
+    <!-- Filter Form -->
+    <div style="margin: 20px 0; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd;">
+        {% include 'voter_analytics/filter_form.html' %}
+    </div>
+    
+    <!-- Graph 1: Birth Year Distribution -->
+    <div style="margin: 30px 0;">
+        {{ graph_birth_year|safe }}
+    </div>
+    
+    <!-- Graph 2: Party Affiliation Distribution -->
+    <div style="margin: 30px 0;">
+        {{ graph_party|safe }}
+    </div>
+    
+    <!-- Graph 3: Election Participation -->
+    <div style="margin: 30px 0;">
+        {{ graph_elections|safe }}
+    </div>
+</div>
+{% endblock %}

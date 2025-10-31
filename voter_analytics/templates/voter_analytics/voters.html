@@ -1,0 +1,74 @@
+<!-- file: voters.html -->
+<!-- name: Shanika Paul -->
+<!-- email: shanikap@bu.edu -->
+<!-- date: October 31, 2025 -->
+<!-- description: Template to display list of voters with filtering and pagination. -->
+
+{% extends 'voter_analytics/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1>Newton Voters</h1>
+
+    <!-- Filter Form -->
+    <div style="margin: 20px 0; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd;">
+        {% include 'voter_analytics/filter_form.html' %}
+    </div>
+    
+    <!-- Pagination controls at the top -->
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    <!-- Table of voters -->
+    <table>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Street Address</th>
+            <th>Date of Birth</th>
+            <th>Party Affiliation</th>
+            <th>Voter Score</th>
+            <th>Details</th>
+        </tr>
+        
+        {% for voter in voters %}
+        <tr>
+            <td>{{ voter.first_name }}</td>
+            <td>{{ voter.last_name }}</td>
+            <td>{{ voter.street_number }} {{ voter.street_name }}</td>
+            <td>{{ voter.date_of_birth }}</td>
+            <td>{{ voter.party_affiliation }}</td>
+            <td>{{ voter.voter_score }}</td>
+            <td><a href="{% url 'voter' voter.pk %}">View</a></td>
+            
+        </tr>
+        {% endfor %}
+    </table>
+    
+    <!-- Pagination controls at the bottom -->
+    {% if is_paginated %}
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+        
+        <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
