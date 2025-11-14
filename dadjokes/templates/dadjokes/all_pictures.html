@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>All Pictures</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .picture { text-align: center; margin: 30px 0; padding: 20px; background: #f0f0f0; border-radius: 8px; }
+        img { max-width: 100%; height: auto; border-radius: 8px; }
+        .contributor { color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>All Pictures</h1>
+    
+    {% for picture in pictures %}
+    <div class="picture">
+        <img src="{{ picture.image_url }}" alt="Funny picture">
+        <p class="contributor">Contributed by: {{ picture.contributor }}</p>
+        <p><a href="{% url 'picture_detail' picture.pk %}">View Details</a></p>
+    </div>
+    {% endfor %}
+    
+    <p><a href="{% url 'index' %}">Back to Home</a></p>
+</body>
+</html>

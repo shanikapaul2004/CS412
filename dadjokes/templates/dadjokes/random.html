@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Dad Joke</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .joke { background: #f0f0f0; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .picture { text-align: center; margin: 20px 0; }
+        img { max-width: 100%; height: auto; border-radius: 8px; }
+        .contributor { color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>Random Dad Joke</h1>
+    
+    {% if joke %}
+    <div class="joke">
+        <p>{{ joke.text }}</p>
+        <p class="contributor">- {{ joke.contributor }}</p>
+    </div>
+    {% endif %}
+    
+    {% if picture %}
+    <div class="picture">
+        <img src="{{ picture.image_url }}" alt="Funny picture">
+        <p class="contributor">Contributed by: {{ picture.contributor }}</p>
+    </div>
+    {% endif %}
+    
+    <p><a href="{% url 'random' %}">Get Another Random Joke</a></p>
+    <p><a href="{% url 'all_jokes' %}">View All Jokes</a></p>
+    <p><a href="{% url 'all_pictures' %}">View All Pictures</a></p>
+</body>
+</html>
