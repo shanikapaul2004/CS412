@@ -1,0 +1,50 @@
+<!--
+File: trendtracking_confirm_delete.html
+Author: Shanika Paul
+Description: Confirmation page for deleting a trend tracking record.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}Delete Trend Tracking - Fashion Trend Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-exclamation-triangle"></i> Delete Trend Tracking</h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Confirm Deletion</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i> <strong>Warning!</strong> This action cannot be undone.
+                    </div>
+                    
+                    <p>Are you sure you want to delete the tracking record:</p>
+                    <p><strong>{{ object.trend_name }}</strong></p>
+                    <p class="text-muted">Q{{ object.quarter }} {{ object.year }}</p>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Yes, Delete Tracking
+                            </button>
+                            <a href="{% url 'project:trendtracking_detail' object.pk %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

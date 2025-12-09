@@ -1,0 +1,134 @@
+<!--
+File: trendtracking_list.html
+Author: Shanika Paul
+Description: List view of trend tracking records over time.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}Trend Tracking - Fashion Trend Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-graph-up-arrow"></i> Trend Tracking</h1>
+        <p class="lead">Track fashion trends over time</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <form method="get" class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="search" class="form-control" placeholder="Search trend name..." value="{{ request.GET.search|default:'' }}">
+            </div>
+            <div class="col-md-3">
+                <input type="number" name="year" class="form-control" placeholder="Year..." value="{{ request.GET.year|default:'' }}">
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">All Status</option>
+                    <option value="emerging" {% if request.GET.status == 'emerging' %}selected{% endif %}>Emerging</option>
+                    <option value="rising" {% if request.GET.status == 'rising' %}selected{% endif %}>Rising</option>
+                    <option value="peak" {% if request.GET.status == 'peak' %}selected{% endif %}>Peak</option>
+                    <option value="declining" {% if request.GET.status == 'declining' %}selected{% endif %}>Declining</option>
+                    <option value="archived" {% if request.GET.status == 'archived' %}selected{% endif %}>Archived</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add Tracking Button -->
+    <div class="mb-3">
+        <a href="{% url 'project:trendtracking_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add New Tracking
+        </a>
+    </div>
+
+    <!-- Tracking Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Trend Name</th>
+                            <th>Period</th>
+                            <th>Mentions</th>
+                            <th>Popularity</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tracking in trackings %}
+                        <tr>
+                            <td><strong>{{ tracking.trend_name }}</strong></td>
+                            <td>Q{{ tracking.quarter }} {{ tracking.year }}</td>
+                            <td>
+                                <span class="badge bg-info text-dark">{{ tracking.mentions_count }} mentions</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ tracking.popularity_rating }}/10</span>
+                            </td>
+                            <td>
+                                {% if tracking.trend_status == 'emerging' %}
+                                <span class="badge bg-secondary">{{ tracking.trend_status }}</span>
+                                {% elif tracking.trend_status == 'rising' %}
+                                <span class="badge bg-success">{{ tracking.trend_status }}</span>
+                                {% elif tracking.trend_status == 'peak' %}
+                                <span class="badge bg-warning text-dark">{{ tracking.trend_status }}</span>
+                                {% elif tracking.trend_status == 'declining' %}
+                                <span class="badge bg-danger">{{ tracking.trend_status }}</span>
+                                {% else %}
+                                <span class="badge bg-dark">{{ tracking.trend_status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'project:trendtracking_detail' tracking.pk %}" class="btn btn-sm btn-primary">View</a>
+                                <a href="{% url 'project:trendtracking_update' tracking.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">
+                                No tracking records found. <a href="{% url 'project:trendtracking_create' %}">Add one now!</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

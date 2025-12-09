@@ -1,0 +1,100 @@
+<!--
+File: trenditem_form.html
+Author: Shanika Paul
+Description: Form for creating and updating trend item records.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Trend - Fashion Trend Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-star"></i> {% if form.instance.pk %}Edit{% else %}Add New{% endif %} Trend</h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.collection.id_for_label }}" class="form-label">Collection *</label>
+                            {{ form.collection }}
+                            {% if form.collection.errors %}
+                                <div class="text-danger">{{ form.collection.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Select the collection this trend appeared in.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.trend_name.id_for_label }}" class="form-label">Trend Name *</label>
+                            {{ form.trend_name }}
+                            {% if form.trend_name.errors %}
+                                <div class="text-danger">{{ form.trend_name.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">e.g., "Oversized Blazers", "Neon Accents"</small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.category.id_for_label }}" class="form-label">Category *</label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="text-danger">{{ form.category.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.influence_level.id_for_label }}" class="form-label">Influence Level *</label>
+                                {{ form.influence_level }}
+                                {% if form.influence_level.errors %}
+                                    <div class="text-danger">{{ form.influence_level.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.popularity_score.id_for_label }}" class="form-label">Popularity Score (1-10) *</label>
+                            {{ form.popularity_score }}
+                            {% if form.popularity_score.errors %}
+                                <div class="text-danger">{{ form.popularity_score.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Rate from 1 (low) to 10 (high impact)</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Describe the trend in detail.</small>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Save Trend
+                            </button>
+                            <a href="{% url 'project:trenditem_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('input[type="text"], input[type="number"], select, textarea').forEach(field => {
+        field.classList.add('form-control');
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,225 @@
+<!--
+File: analytics.html
+Author: Shanika Paul
+Description: Analytics and reporting page with charts and statistics.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}Analytics - Fashion Trend Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-bar-chart"></i> Fashion Trend Analytics</h1>
+        <p class="lead">Data insights and trend analysis</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Top Designers -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-trophy"></i> Top Designers by Collection Count</h5>
+        </div>
+        <div class="card-body">
+            {% if top_designers %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Designer</th>
+                            <th>Country</th>
+                            <th>Style</th>
+                            <th>Collections</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for designer in top_designers %}
+                        <tr>
+                            <td><strong>#{{ forloop.counter }}</strong></td>
+                            <td>
+                                <a href="{% url 'project:designer_detail' designer.pk %}">{{ designer.name }}</a>
+                            </td>
+                            <td>{{ designer.country }}</td>
+                            <td><span class="badge bg-secondary">{{ designer.style_category }}</span></td>
+                            <td><span class="badge bg-primary">{{ designer.num_collections }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Trends by Category -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Trends by Category</h5>
+                </div>
+                <div class="card-body">
+                    {% if trends_by_category %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Count</th>
+                                    <th>Avg Popularity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in trends_by_category %}
+                                <tr>
+                                    <td><span class="badge bg-secondary">{{ item.category }}</span></td>
+                                    <td>{{ item.count }}</td>
+                                    <td>{{ item.avg_popularity|floatformat:1 }}/10</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Collections by Location -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0"><i class="bi bi-geo-alt"></i> Collections by Location</h5>
+                </div>
+                <div class="card-body">
+                    {% if collections_by_location %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Location</th>
+                                    <th>Collections</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in collections_by_location %}
+                                <tr>
+                                    <td><strong>{{ item.location }}</strong></td>
+                                    <td><span class="badge bg-info text-dark">{{ item.count }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yearly Statistics -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-calendar"></i> Yearly Analysis</h5>
+        </div>
+        <div class="card-body">
+            {% if year_stats %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Collections</th>
+                            <th>Trends</th>
+                            <th>Avg Popularity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stat in year_stats %}
+                        <tr>
+                            <td><strong>{{ stat.year }}</strong></td>
+                            <td><span class="badge bg-primary">{{ stat.collections }}</span></td>
+                            <td><span class="badge bg-success">{{ stat.trends }}</span></td>
+                            <td><span class="badge bg-info text-dark">{{ stat.avg_popularity|floatformat:1 }}/10</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Top Trends -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-star-fill"></i> Top 10 Most Popular Trends</h5>
+        </div>
+        <div class="card-body">
+            {% if top_trends %}
+            <div class="row">
+                {% for trend in top_trends %}
+                <div class="col-md-6 mb-3">
+                    <div class="card border-primary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6>{{ trend.trend_name }}</h6>
+                                    <p class="mb-1 small text-muted">
+                                        {{ trend.collection.designer.name }}<br>
+                                        {{ trend.collection.season }} {{ trend.collection.year }}
+                                    </p>
+                                    <span class="badge bg-secondary">{{ trend.category }}</span>
+                                    <span class="badge bg-info text-dark">{{ trend.influence_level }}</span>
+                                </div>
+                                <span class="badge bg-primary fs-5">{{ trend.popularity_score }}/10</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">No data available.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Trend Status Distribution -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-graph-up"></i> Trend Status Distribution</h5>
+        </div>
+        <div class="card-body">
+            {% if trend_status_dist %}
+            <div class="row">
+                {% for item in trend_status_dist %}
+                <div class="col-md-3">
+                    <div class="card mb-2">
+                        <div class="card-body text-center">
+                            <h6>{{ item.trend_status|title }}</h6>
+                            <div class="display-4">{{ item.count }}</div>
+                            <p class="text-muted mb-0">trends</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">No tracking data available.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

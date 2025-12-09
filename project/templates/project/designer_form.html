@@ -1,0 +1,97 @@
+<!--
+File: designer_form.html
+Author: Shanika Paul
+Description: Form for creating and updating designer records.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Designer - Fashion Trend Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-person"></i> {% if form.instance.pk %}Edit{% else %}Add New{% endif %} Designer</h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">Designer/Brand Name *</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="text-danger">{{ form.name.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.country.id_for_label }}" class="form-label">Country *</label>
+                                {{ form.country }}
+                                {% if form.country.errors %}
+                                    <div class="text-danger">{{ form.country.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.founded_year.id_for_label }}" class="form-label">Founded Year *</label>
+                                {{ form.founded_year }}
+                                {% if form.founded_year.errors %}
+                                    <div class="text-danger">{{ form.founded_year.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.style_category.id_for_label }}" class="form-label">Style Category *</label>
+                            {{ form.style_category }}
+                            {% if form.style_category.errors %}
+                                <div class="text-danger">{{ form.style_category.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">Description *</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="{{ form.website.id_for_label }}" class="form-label">Website (optional)</label>
+                            {{ form.website }}
+                            {% if form.website.errors %}
+                                <div class="text-danger">{{ form.website.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Save Designer
+                            </button>
+                            <a href="{% url 'project:designer_list' %}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add Bootstrap classes to form fields
+    document.querySelectorAll('input[type="text"], input[type="number"], input[type="url"], select, textarea').forEach(field => {
+        field.classList.add('form-control');
+    });
+</script>
+{% endblock %}

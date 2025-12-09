@@ -1,0 +1,127 @@
+<!--
+File: designer_detail.html
+Author: Shanika Paul
+Description: Detailed view of a single designer with collections and trends.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}{{ designer.name }} - Fashion Trend Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>{{ designer.name }}</h1>
+        <p class="lead">{{ designer.country }} | {{ designer.style_category }}</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Designer Info -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5>About</h5>
+                    <p>{{ designer.description }}</p>
+                    <p><strong>Founded:</strong> {{ designer.founded_year }}</p>
+                    <p><strong>Style:</strong> <span class="badge bg-secondary">{{ designer.style_category }}</span></p>
+                    {% if designer.website %}
+                    <p><strong>Website:</strong> <a href="{{ designer.website }}" target="_blank">{{ designer.website }}</a></p>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <div class="stat-card">
+                        <p>Collections</p>
+                        <h3>{{ designer.collection_count }}</h3>
+                    </div>
+                    <div class="stat-card mt-3" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <p>Total Trends</p>
+                        <h3>{{ trends.count }}</h3>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <a href="{% url 'project:designer_update' designer.pk %}" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'project:designer_delete' designer.pk %}" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+                <a href="{% url 'project:designer_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collections -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-grid"></i> Collections</h5>
+        </div>
+        <div class="card-body">
+            {% if collections %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Season</th>
+                            <th>Year</th>
+                            <th>Location</th>
+                            <th>Theme</th>
+                            <th>Trends</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for collection in collections %}
+                        <tr>
+                            <td><span class="badge bg-info text-dark">{{ collection.season }}</span></td>
+                            <td>{{ collection.year }}</td>
+                            <td>{{ collection.location }}</td>
+                            <td>{{ collection.theme }}</td>
+                            <td>{{ collection.trend_count }}</td>
+                            <td>
+                                <a href="{% url 'project:collection_detail' collection.pk %}" class="btn btn-sm btn-primary">View</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No collections yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Top Trends from this Designer -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-star"></i> Top Trends</h5>
+        </div>
+        <div class="card-body">
+            {% if trends %}
+            <div class="row">
+                {% for trend in trends|slice:":6" %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>{{ trend.trend_name }}</h6>
+                            <p class="mb-1"><small class="text-muted">{{ trend.category }}</small></p>
+                            <span class="badge bg-primary">{{ trend.popularity_score }}/10</span>
+                            <span class="badge bg-secondary">{{ trend.influence_level }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted">No trends yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -29,6 +29,7 @@ urlpatterns = [
     path('voter_analytics/', include('voter_analytics.urls')), 
     path('api-auth/', include('rest_framework.urls')),
     path('dadjokes/', include('dadjokes.urls')),
+    path('project/', include('project.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 

@@ -1,0 +1,77 @@
+<!--
+File: trenditem_detail.html
+Author: Shanika Paul
+Description: Detailed view of a single trend.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}{{ trend.trend_name }} - Fashion Trend Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>{{ trend.trend_name }}</h1>
+        <p class="lead">{{ trend.category }} | Popularity: {{ trend.popularity_score }}/10</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5>Trend Details</h5>
+                    
+                    <p><strong>Description:</strong></p>
+                    <p>{{ trend.description }}</p>
+                    
+                    <p><strong>Category:</strong> <span class="badge bg-secondary">{{ trend.category }}</span></p>
+                    <p><strong>Influence Level:</strong> <span class="badge bg-info text-dark">{{ trend.influence_level }}</span></p>
+                    <p><strong>Popularity Score:</strong> <span class="badge bg-primary fs-5">{{ trend.popularity_score }}/10</span></p>
+                    
+                    <hr>
+                    
+                    <h6>Collection Information</h6>
+                    <p><strong>Designer:</strong> <a href="{% url 'project:designer_detail' trend.collection.designer.pk %}">{{ trend.collection.designer.name }}</a></p>
+                    <p><strong>Collection:</strong> <a href="{% url 'project:collection_detail' trend.collection.pk %}">{{ trend.collection.season }} {{ trend.collection.year }}</a></p>
+                    <p><strong>Location:</strong> {{ trend.collection.location }}</p>
+                    <p><strong>Theme:</strong> {{ trend.collection.theme }}</p>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h6>Popularity</h6>
+                            <div class="display-3 text-primary">{{ trend.popularity_score }}</div>
+                            <p class="text-muted">out of 10</p>
+                            
+                            <div class="progress" style="height: 25px;">
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: {{ trend.popularity_score }}0%;" 
+                                     aria-valuenow="{{ trend.popularity_score }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="10">
+                                    {{ trend.popularity_score }}0%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="{% url 'project:trenditem_update' trend.pk %}" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'project:trenditem_delete' trend.pk %}" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+                <a href="{% url 'project:trenditem_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

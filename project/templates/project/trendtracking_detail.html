@@ -1,0 +1,94 @@
+<!--
+File: trendtracking_detail.html
+Author: Shanika Paul
+Description: Detailed view of a trend tracking record.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}{{ tracking.trend_name }} - Trend Tracking{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>{{ tracking.trend_name }}</h1>
+        <p class="lead">Q{{ tracking.quarter }} {{ tracking.year }}</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <h5>Tracking Details</h5>
+                    <p><strong>Trend Name:</strong> {{ tracking.trend_name }}</p>
+                    <p><strong>Period:</strong> Q{{ tracking.quarter }} {{ tracking.year }}</p>
+                    <p><strong>Mentions:</strong> <span class="badge bg-info text-dark fs-6">{{ tracking.mentions_count }} collections</span></p>
+                    <p><strong>Popularity Rating:</strong> <span class="badge bg-primary fs-6">{{ tracking.popularity_rating }}/10</span></p>
+                    <p><strong>Status:</strong> 
+                        {% if tracking.trend_status == 'rising' %}
+                        <span class="badge bg-success fs-6">{{ tracking.trend_status }}</span>
+                        {% elif tracking.trend_status == 'peak' %}
+                        <span class="badge bg-warning text-dark fs-6">{{ tracking.trend_status }}</span>
+                        {% elif tracking.trend_status == 'declining' %}
+                        <span class="badge bg-danger fs-6">{{ tracking.trend_status }}</span>
+                        {% else %}
+                        <span class="badge bg-secondary fs-6">{{ tracking.trend_status }}</span>
+                        {% endif %}
+                    </p>
+                    {% if tracking.notes %}
+                    <p><strong>Notes:</strong> {{ tracking.notes }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card bg-light">
+                        <div class="card-body text-center">
+                            <h6>Popularity</h6>
+                            <div class="display-3 text-primary">{{ tracking.popularity_rating }}</div>
+                            <p class="text-muted">out of 10</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-3">
+                <a href="{% url 'project:trendtracking_update' tracking.pk %}" class="btn btn-primary">
+                    <i class="bi bi-pencil"></i> Edit
+                </a>
+                <a href="{% url 'project:trendtracking_delete' tracking.pk %}" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Delete
+                </a>
+                <a href="{% url 'project:trendtracking_list' %}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Trends -->
+    {% if related_trends %}
+    <div class="card">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0"><i class="bi bi-link"></i> Related Trend Items</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for trend in related_trends %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h6>{{ trend.trend_name }}</h6>
+                            <p class="mb-1"><small>{{ trend.collection.designer.name }}</small></p>
+                            <p class="mb-0"><small>{{ trend.collection.season }} {{ trend.collection.year }}</small></p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

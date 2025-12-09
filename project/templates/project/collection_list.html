@@ -1,0 +1,149 @@
+<!--
+File: collection_list.html
+Author: Shanika Paul
+Description: List view of all collections with filtering.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}Collections - Fashion Trend Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-grid"></i> Fashion Collections</h1>
+        <p class="lead">Browse runway collections from fashion weeks</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="search" class="form-control" placeholder="Search theme..." value="{{ request.GET.search|default:'' }}">
+            </div>
+            <div class="col-md-2">
+                <select name="season" class="form-select">
+                    <option value="">All Seasons</option>
+                    <option value="SS" {% if request.GET.season == 'SS' %}selected{% endif %}>Spring/Summer</option>
+                    <option value="FW" {% if request.GET.season == 'FW' %}selected{% endif %}>Fall/Winter</option>
+                    <option value="Resort" {% if request.GET.season == 'Resort' %}selected{% endif %}>Resort</option>
+                    <option value="Pre-Fall" {% if request.GET.season == 'Pre-Fall' %}selected{% endif %}>Pre-Fall</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="year" class="form-control" placeholder="Year..." value="{{ request.GET.year|default:'' }}">
+            </div>
+            <div class="col-md-2">
+                <select name="location" class="form-select">
+                    <option value="">All Locations</option>
+                    <option value="Paris" {% if request.GET.location == 'Paris' %}selected{% endif %}>Paris</option>
+                    <option value="Milan" {% if request.GET.location == 'Milan' %}selected{% endif %}>Milan</option>
+                    <option value="New York" {% if request.GET.location == 'New York' %}selected{% endif %}>New York</option>
+                    <option value="London" {% if request.GET.location == 'London' %}selected{% endif %}>London</option>
+                    <option value="Tokyo" {% if request.GET.location == 'Tokyo' %}selected{% endif %}>Tokyo</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="designer" class="form-select">
+                    <option value="">All Designers</option>
+                    {% for designer in designers %}
+                    <option value="{{ designer.pk }}" {% if request.GET.designer == designer.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ designer.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add Collection Button -->
+    <div class="mb-3">
+        <a href="{% url 'project:collection_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add New Collection
+        </a>
+    </div>
+
+    <!-- Collections Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Designer</th>
+                            <th>Season</th>
+                            <th>Year</th>
+                            <th>Location</th>
+                            <th>Theme</th>
+                            <th>Trends</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for collection in collections %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'project:designer_detail' collection.designer.pk %}">
+                                    {{ collection.designer.name }}
+                                </a>
+                            </td>
+                            <td><span class="badge bg-info text-dark">{{ collection.season }}</span></td>
+                            <td>{{ collection.year }}</td>
+                            <td><span class="badge bg-secondary">{{ collection.location }}</span></td>
+                            <td>{{ collection.theme|truncatewords:5 }}</td>
+                            <td>{{ collection.trend_count }}</td>
+                            <td>
+                                <a href="{% url 'project:collection_detail' collection.pk %}" class="btn btn-sm btn-primary">View</a>
+                                <a href="{% url 'project:collection_update' collection.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="text-center text-muted">
+                                No collections found. <a href="{% url 'project:collection_create' %}">Add one now!</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if is_paginated %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">First</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    </li>
+                    {% endif %}
+                    
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+                    
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

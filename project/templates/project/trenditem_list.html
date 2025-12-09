@@ -1,0 +1,139 @@
+<!--
+File: trenditem_list.html
+Author: Shanika Paul
+Description: List view of all trends with advanced filtering.
+-->
+
+{% extends 'project/base.html' %}
+
+{% block title %}Trends - Fashion Trend Analytics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1><i class="bi bi-star"></i> Fashion Trends</h1>
+        <p class="lead">Explore trending styles and innovations</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="search" class="form-control" placeholder="Search trends..." value="{{ request.GET.search|default:'' }}">
+            </div>
+            <div class="col-md-2">
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    <option value="color" {% if request.GET.category == 'color' %}selected{% endif %}>Color</option>
+                    <option value="silhouette" {% if request.GET.category == 'silhouette' %}selected{% endif %}>Silhouette</option>
+                    <option value="fabric" {% if request.GET.category == 'fabric' %}selected{% endif %}>Fabric</option>
+                    <option value="pattern" {% if request.GET.category == 'pattern' %}selected{% endif %}>Pattern</option>
+                    <option value="accessory" {% if request.GET.category == 'accessory' %}selected{% endif %}>Accessory</option>
+                    <option value="styling" {% if request.GET.category == 'styling' %}selected{% endif %}>Styling</option>
+                    <option value="theme" {% if request.GET.category == 'theme' %}selected{% endif %}>Theme</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="influence" class="form-select">
+                    <option value="">All Influence Levels</option>
+                    <option value="niche" {% if request.GET.influence == 'niche' %}selected{% endif %}>Niche</option>
+                    <option value="emerging" {% if request.GET.influence == 'emerging' %}selected{% endif %}>Emerging</option>
+                    <option value="mainstream" {% if request.GET.influence == 'mainstream' %}selected{% endif %}>Mainstream</option>
+                    <option value="iconic" {% if request.GET.influence == 'iconic' %}selected{% endif %}>Iconic</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select name="min_popularity" class="form-select">
+                    <option value="">Min Popularity</option>
+                    <option value="7" {% if request.GET.min_popularity == '7' %}selected{% endif %}>7+</option>
+                    <option value="8" {% if request.GET.min_popularity == '8' %}selected{% endif %}>8+</option>
+                    <option value="9" {% if request.GET.min_popularity == '9' %}selected{% endif %}>9+</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="year" class="form-control" placeholder="Year..." value="{{ request.GET.year|default:'' }}">
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add Trend Button -->
+    <div class="mb-3">
+        <a href="{% url 'project:trenditem_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add New Trend
+        </a>
+    </div>
+
+    <!-- Trends Grid -->
+    <div class="row">
+        {% for trend in trends %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title">{{ trend.trend_name }}</h5>
+                        <span class="badge bg-primary fs-6">{{ trend.popularity_score }}/10</span>
+                    </div>
+                    
+                    <p class="mb-2">
+                        <span class="badge bg-secondary">{{ trend.category }}</span>
+                        <span class="badge bg-info text-dark">{{ trend.influence_level }}</span>
+                    </p>
+                    
+                    <p class="card-text small text-muted">
+                        <i class="bi bi-person"></i> {{ trend.collection.designer.name }}<br>
+                        <i class="bi bi-calendar"></i> {{ trend.collection.season }} {{ trend.collection.year }}
+                    </p>
+                    
+                    <p class="card-text">{{ trend.description|truncatewords:20 }}</p>
+                    
+                    <div class="d-flex gap-2 mt-auto">
+                        <a href="{% url 'project:trenditem_detail' trend.pk %}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <a href="{% url 'project:trenditem_update' trend.pk %}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i> No trends found. <a href="{% url 'project:trenditem_create' %}">Add one now!</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            
+            <li class="page-item active">
+                <span class="page-link">{{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
