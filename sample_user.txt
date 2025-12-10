@@ -1,1 +1,2 @@
-https://cs-webapps.bu.edu/shanikap/mini_insta/profile/7
+user: shanikap
+password: Honeymustardbaby69!
